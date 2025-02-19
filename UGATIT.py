@@ -144,15 +144,20 @@ class UGATIT(object) :
         # training loop
         print('training start !')
         start_time = time.time()
-        #추가가
+        # =====LKO추가(start)=====
+        # 초기화화
         trainA_iter = iter(self.trainA_loader)
         trainB_iter = iter(self.trainB_loader)
+        # 메모리 정리 (5번)
+        torch.cuda.empty_cache()
+        # =====LKO추가(end)=====
 
         for step in range(start_iter, self.iteration + 1):
             if self.decay_flag and step > (self.iteration // 2):
                 self.G_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
                 self.D_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
 
+            # =====LKO추가(start)=====
             try:
                 real_A, _ = next(trainA_iter)
             except StopIteration:
@@ -166,7 +171,7 @@ class UGATIT(object) :
                 real_B, _ = next(trainB_iter)
 
             real_A, real_B = real_A.to(self.device), real_B.to(self.device)
-
+            # =====LKO추가(end)=====
             '''
             try:
                 real_A, _ = trainA_iter.next()
