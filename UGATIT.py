@@ -144,11 +144,30 @@ class UGATIT(object) :
         # training loop
         print('training start !')
         start_time = time.time()
+        #추가가
+        trainA_iter = iter(self.trainA_loader)
+        trainB_iter = iter(self.trainB_loader)
+
         for step in range(start_iter, self.iteration + 1):
             if self.decay_flag and step > (self.iteration // 2):
                 self.G_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
                 self.D_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
 
+            try:
+                real_A, _ = next(trainA_iter)
+            except StopIteration:
+                trainA_iter = iter(self.trainA_loader)
+                real_A, _ = next(trainA_iter)
+
+            try:
+                real_B, _ = next(trainB_iter)
+            except StopIteration:
+                trainB_iter = iter(self.trainB_loader)
+                real_B, _ = next(trainB_iter)
+
+            real_A, real_B = real_A.to(self.device), real_B.to(self.device)
+
+            '''
             try:
                 real_A, _ = trainA_iter.next()
             except:
@@ -160,7 +179,7 @@ class UGATIT(object) :
             except:
                 trainB_iter = iter(self.trainB_loader)
                 real_B, _ = trainB_iter.next()
-
+            '''
             real_A, real_B = real_A.to(self.device), real_B.to(self.device)
 
             # Update D
