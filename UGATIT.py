@@ -274,6 +274,20 @@ class UGATIT(object) :
 
                 self.genA2B.eval(), self.genB2A.eval(), self.disGA.eval(), self.disGB.eval(), self.disLA.eval(), self.disLB.eval()
                 for _ in range(train_sample_num):
+
+                    try:
+                        real_A, _ = next(trainA_iter)
+                    except StopIteration:
+                        trainA_iter = iter(self.trainA_loader)
+                        real_A, _ = next(trainA_iter)
+
+                    try:
+                        real_B, _ = next(trainB_iter)
+                    except StopIteration:
+                        trainB_iter = iter(self.trainB_loader)
+                        real_B, _ = next(trainB_iter)
+
+                    '''
                     try:
                         real_A, _ = trainA_iter.next()
                     except:
@@ -285,6 +299,7 @@ class UGATIT(object) :
                     except:
                         trainB_iter = iter(self.trainB_loader)
                         real_B, _ = trainB_iter.next()
+                    '''   
                     real_A, real_B = real_A.to(self.device), real_B.to(self.device)
 
                     fake_A2B, _, fake_A2B_heatmap = self.genA2B(real_A)
